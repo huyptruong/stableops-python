@@ -7,6 +7,8 @@ AI-powered tools for therapeutic riding programs. Python + Streamlit app built o
 ## What’s included
 
 - **Create Social Post** — Generate social post content for Instagram and/or Facebook (AI or template fallback). Results are saved in the app database.
+- **Create Newsletter** — Generate newsletter subject and body (AI). Results are saved as artifacts.
+- **Draft Grant Proposal** — Draft grant narrative sections with suggested headings (AI). Results are saved as artifacts.
 
 ---
 
@@ -47,6 +49,8 @@ See `.env.example` for a template.
 - **ANTHROPIC_API_KEY** — Used if OpenAI is not set (optional).
 - **OPENAI_MODEL**, **ANTHROPIC_MODEL** — Model names (defaults in `.env.example`).
 - **MAX_TOKENS_SOCIAL_POST** — Max tokens for social post (default: 512).
+- **MAX_TOKENS_NEWSLETTER** — Max tokens for newsletter (default: 1024).
+- **MAX_TOKENS_GRANT** — Max tokens for grant draft (default: 2048).
 - **DATA_DIR**, **SQLITE_PATH** — Override data directory and database path (defaults: `./data`, `./data/app.db`).
 
 ---

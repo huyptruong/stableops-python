@@ -22,6 +22,8 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
 MAX_TOKENS_SOCIAL_POST = int(os.getenv("MAX_TOKENS_SOCIAL_POST", "512"))
+MAX_TOKENS_NEWSLETTER = int(os.getenv("MAX_TOKENS_NEWSLETTER", "1024"))
+MAX_TOKENS_GRANT = int(os.getenv("MAX_TOKENS_GRANT", "2048"))
 
 
 def ensure_data_dir() -> None:

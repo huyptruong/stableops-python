@@ -36,7 +36,7 @@ Single bootstrap: `bootstrap_app()` runs `load_dotenv()`, `ensure_data_dir()`, `
 
 Core workflow logic. Each module implements one workflow (e.g. Create Social Post).
 
-**Current:** `create_social_post.py` — `run_create_social_post(inp, use_llm)` builds prompts, calls the LLM integration (or uses a template fallback), saves the result via the artifact integration, and returns a structured output.
+**Current:** `create_social_post.py` — `run_create_social_post(inp, use_llm)` builds prompts, calls the LLM integration (or uses a template fallback), saves the result via the artifact integration, and returns a structured output. `create_newsletter.py` — `run_create_newsletter(inp)` generates subject and body (with optional JSON parsing), saves as `newsletter` artifact. `draft_grant_proposal.py` — `run_draft_grant_proposal(inp)` generates draft sections and suggested headings, saves as `grant_draft` artifact.
 
 Services call integrations (LLM, storage); they do not call external APIs directly.
 
@@ -56,7 +56,7 @@ External systems:
 
 Prompt templates used by workflows. Services import and format them (e.g. `SOCIAL_POST_SYSTEM`, `SOCIAL_POST_USER` in `social_post.py`). Keeps prompt text separate from service code for easier editing and versioning.
 
-**Current:** `social_post.py` — system and user prompt strings for the Create Social Post workflow.
+**Current:** `social_post.py` — system and user prompt strings for the Create Social Post workflow. `newsletter.py` — prompts for Create Newsletter (JSON subject/body). `grant.py` — prompts for Draft Grant Proposal.
 
 ---
 
@@ -86,7 +86,7 @@ Helpers that don’t belong to a specific workflow (none used by the current wor
 
 ### tests/
 
-Pytest tests. Current: smoke test plus tests for `run_create_social_post` (fallback and LLM paths, with mocks for LLM and `save_artifact`).
+Pytest tests. Current: smoke test plus tests for `run_create_social_post`, `run_create_newsletter`, and `run_draft_grant_proposal` (with mocks for LLM and `save_artifact`).
 
 ---
 
