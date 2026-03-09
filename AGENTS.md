@@ -18,4 +18,4 @@ Use this file to keep AI-assisted changes aligned with the project.
 - Prefer readable code over clever code.
 - Add tests for important logic. Run: `pytest` from project root.
 - Use the existing logging pattern: `logging.getLogger(__name__)` in each module.
-- See `docs/architecture.md` and `docs/new_project_workflow.md` for full details.
+- See `docs/architecture.md` for architecture; `docs/new_project_workflow.md` for project setup workflow.

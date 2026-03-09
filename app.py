@@ -47,15 +47,18 @@ if page == "Create Social Post":
                     CreatePostInput(details=details.strip(), platform=platform),
                     use_llm=use_llm,
                 )
-            st.subheader("Generated Post")
-            st.text_area("Post content", value=out.post_text, height=220, key="post_result", disabled=True)
-            st.download_button(
-                "Download as .txt",
-                data=out.post_text,
-                file_name="stableops_post.txt",
-                mime="text/plain",
-                key="dl_post",
-            )
+            st.session_state["create_social_post_result"] = out
+    if "create_social_post_result" in st.session_state:
+        out = st.session_state["create_social_post_result"]
+        st.subheader("Generated Post")
+        st.text_area("Post content", value=out.post_text, height=220, key="post_result", disabled=True)
+        st.download_button(
+            "Download as .txt",
+            data=out.post_text,
+            file_name="stableops_post.txt",
+            mime="text/plain",
+            key="dl_post",
+        )
 
 elif page == "Create Newsletter":
     st.header("Create Newsletter")
@@ -78,18 +81,21 @@ elif page == "Create Newsletter":
                         tone=tone,
                     ),
                 )
-            st.subheader("Subject line")
-            st.text_input("Subject", value=out.subject_line, key="news_subj", disabled=True)
-            st.subheader("Body (plain text)")
-            st.text_area("Body", value=out.body_plain, height=280, key="news_body", disabled=True)
-            full = f"Subject: {out.subject_line}\n\n{out.body_plain}"
-            st.download_button(
-                "Download as .txt",
-                data=full,
-                file_name="stableops_newsletter.txt",
-                mime="text/plain",
-                key="dl_news",
-            )
+            st.session_state["create_newsletter_result"] = out
+    if "create_newsletter_result" in st.session_state:
+        out = st.session_state["create_newsletter_result"]
+        st.subheader("Subject line")
+        st.text_input("Subject", value=out.subject_line, key="news_subj", disabled=True)
+        st.subheader("Body (plain text)")
+        st.text_area("Body", value=out.body_plain, height=280, key="news_body", disabled=True)
+        full = f"Subject: {out.subject_line}\n\n{out.body_plain}"
+        st.download_button(
+            "Download as .txt",
+            data=full,
+            file_name="stableops_newsletter.txt",
+            mime="text/plain",
+            key="dl_news",
+        )
 
 elif page == "Draft Grant Proposal":
     st.header("Draft Grant Proposal")
@@ -119,20 +125,23 @@ elif page == "Draft Grant Proposal":
                         deadline=deadline.strip(),
                     ),
                 )
-            st.subheader("Draft sections")
-            st.text_area(
-                "Content",
-                value=out.draft_sections,
-                height=360,
-                key="grant_result",
-                disabled=True,
-            )
-            if out.suggested_headings:
-                st.caption("Suggested headings: " + ", ".join(out.suggested_headings))
-            st.download_button(
-                "Download as .md",
-                data=out.draft_sections,
-                file_name="stableops_grant_draft.md",
-                mime="text/markdown",
-                key="dl_grant",
-            )
+            st.session_state["draft_grant_result"] = out
+    if "draft_grant_result" in st.session_state:
+        out = st.session_state["draft_grant_result"]
+        st.subheader("Draft sections")
+        st.text_area(
+            "Content",
+            value=out.draft_sections,
+            height=360,
+            key="grant_result",
+            disabled=True,
+        )
+        if out.suggested_headings:
+            st.caption("Suggested headings: " + ", ".join(out.suggested_headings))
+        st.download_button(
+            "Download as .md",
+            data=out.draft_sections,
+            file_name="stableops_grant_draft.md",
+            mime="text/markdown",
+            key="dl_grant",
+        )

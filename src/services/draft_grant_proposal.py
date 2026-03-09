@@ -20,11 +20,19 @@ def run_draft_grant_proposal(inp: DraftGrantInput) -> DraftGrantOutput:
         audience=inp.audience or "(not specified)",
         deadline=inp.deadline or "(not specified)",
     )
-    draft_sections = llm_complete_chat(
-        GRANT_SYSTEM,
-        user,
-        max_tokens=MAX_TOKENS_GRANT,
-    )
+    try:
+        draft_sections = llm_complete_chat(
+            GRANT_SYSTEM,
+            user,
+            max_tokens=MAX_TOKENS_GRANT,
+        )
+    except Exception as e:
+        logger.exception("LLM call failed for grant proposal: %s", e)
+        return DraftGrantOutput(
+            draft_sections="The draft could not be generated. Please check your API key and try again.",
+            suggested_headings=["Need Statement", "Program Description", "Goals", "Budget Narrative"],
+        )
+
     # Simple heading extraction: lines that look like section titles
     suggested_headings = []
     for line in draft_sections.split("\n"):
@@ -34,10 +42,12 @@ def run_draft_grant_proposal(inp: DraftGrantInput) -> DraftGrantOutput:
         ):
             suggested_headings.append(s)
     suggested_headings = suggested_headings[:10]
+    default_headings = ["Need Statement", "Program Description", "Goals", "Budget Narrative"]
+    if not suggested_headings:
+        logger.debug("No section headings extracted from grant draft, using defaults")
     out = DraftGrantOutput(
         draft_sections=draft_sections,
-        suggested_headings=suggested_headings
-        or ["Need Statement", "Program Description", "Goals", "Budget Narrative"],
+        suggested_headings=suggested_headings or default_headings,
     )
     save_artifact("grant_draft", out.draft_sections, {"program": inp.program_name})
     return out

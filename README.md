@@ -14,7 +14,7 @@ AI-powered tools for therapeutic riding programs. Python + Streamlit app built o
 
 ## Local setup
 
-**Dependencies:** `pyproject.toml` is the source of truth. For run-only installs (e.g. Streamlit Community Cloud), `requirements.txt` lists the same runtime dependencies and is kept in sync.
+**Dependencies:** `pyproject.toml` is the source of truth. For run-only installs (e.g. Streamlit Community Cloud), `requirements.txt` lists the same runtime dependencies. When you add or change dependencies in `pyproject.toml`, update `requirements.txt` to match (e.g. copy the `[project.dependencies]` list).
 
 ```bash
 python -m venv .venv

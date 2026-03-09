@@ -36,3 +36,15 @@ def test_create_newsletter_plain_text_fallback(mock_llm, mock_save):
     call = mock_save.call_args
     assert call[0][0] == "newsletter"
     assert call[0][2]["topic"] == "News"
+
+
+@patch("src.services.create_newsletter.save_artifact")
+@patch("src.services.create_newsletter.llm_complete_chat")
+def test_create_newsletter_llm_failure_returns_fallback(mock_llm, mock_save):
+    """When LLM raises, returns fallback output and does not save."""
+    mock_llm.side_effect = RuntimeError("API error")
+    inp = CreateNewsletterInput(topic="Fall", highlights="", tone="warm")
+    out = run_create_newsletter(inp)
+    assert out.subject_line == "Generation failed"
+    assert "could not be generated" in out.body_plain
+    mock_save.assert_not_called()

@@ -20,11 +20,21 @@ def run_create_newsletter(inp: CreateNewsletterInput) -> CreateNewsletterOutput:
         highlights=inp.highlights or "(none specified)",
         tone=inp.tone,
     )
-    raw = llm_complete_chat(
-        NEWSLETTER_SYSTEM,
-        user,
-        max_tokens=MAX_TOKENS_NEWSLETTER,
-    )
+    try:
+        raw = llm_complete_chat(
+            NEWSLETTER_SYSTEM,
+            user,
+            max_tokens=MAX_TOKENS_NEWSLETTER,
+        )
+    except Exception as e:
+        logger.exception("LLM call failed for newsletter: %s", e)
+        fallback = CreateNewsletterOutput(
+            subject_line="Generation failed",
+            body_plain="The newsletter could not be generated. Please check your API key and try again.",
+            body_html="",
+        )
+        return fallback
+
     subject_line = "Newsletter from StableOps"
     body_plain = raw
     # Try to parse JSON; strip markdown code fence if present
@@ -37,7 +47,8 @@ def run_create_newsletter(inp: CreateNewsletterInput) -> CreateNewsletterOutput:
         if isinstance(parsed, dict):
             subject_line = parsed.get("subject", subject_line) or subject_line
             body_plain = parsed.get("body", raw) or raw
-    except (json.JSONDecodeError, TypeError):
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.debug("Newsletter response was not valid JSON, using raw body: %s", e)
         pass
     out = CreateNewsletterOutput(
         subject_line=subject_line,

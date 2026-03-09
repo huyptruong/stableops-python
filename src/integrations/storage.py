@@ -3,11 +3,21 @@ import sqlite3
 import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, TypedDict
 
 from src.config import SQLITE_PATH
 
 logger = logging.getLogger(__name__)
+
+
+class ArtifactRow(TypedDict):
+    """One artifact as returned by load_artifacts."""
+
+    id: str
+    kind: str
+    content: str
+    meta: dict[str, Any]
+    created_at: str
 
 
 def get_connection() -> sqlite3.Connection:
@@ -61,7 +71,7 @@ def save_artifact(kind: str, content: str, meta: dict[str, Any] | None = None) -
         raise RuntimeError(f"Failed to save artifact: {e}") from e
 
 
-def load_artifacts(kind: str | None = None, limit: int = 50) -> list[dict[str, Any]]:
+def load_artifacts(kind: str | None = None, limit: int = 50) -> list[ArtifactRow]:
     """Load recent artifacts from the database, optionally filtered by kind. Newest first."""
     try:
         conn = get_connection()

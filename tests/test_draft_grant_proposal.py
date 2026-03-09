@@ -45,3 +45,24 @@ def test_draft_grant_default_headings_when_none_extracted(mock_llm, mock_save):
         "Budget Narrative",
     ]
     mock_save.assert_called_once()
+
+
+@patch("src.services.draft_grant_proposal.save_artifact")
+@patch("src.services.draft_grant_proposal.llm_complete_chat")
+def test_draft_grant_llm_failure_returns_fallback(mock_llm, mock_save):
+    """When LLM raises, returns fallback output and does not save."""
+    mock_llm.side_effect = RuntimeError("API error")
+    inp = DraftGrantInput(
+        program_name="Test",
+        amount_requested="$1,000",
+        purpose="Ops",
+    )
+    out = run_draft_grant_proposal(inp)
+    assert "could not be generated" in out.draft_sections
+    assert out.suggested_headings == [
+        "Need Statement",
+        "Program Description",
+        "Goals",
+        "Budget Narrative",
+    ]
+    mock_save.assert_not_called()
