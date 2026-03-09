@@ -5,8 +5,8 @@ from openai import OpenAI
 from src.config import (
     ANTHROPIC_API_KEY,
     ANTHROPIC_MODEL,
-    OPENAI_API_KEY,
     OPENAI_MODEL,
+    get_openai_api_key,
 )
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ def llm_complete_chat(
     max_tokens: int = 512,
 ) -> str:
     """Chat-style completion with system + user message. Uses OpenAI first, then Anthropic, else stub."""
-    if OPENAI_API_KEY:
+    if get_openai_api_key():
         try:
             return _openai_chat(system_prompt, user_prompt, max_tokens=max_tokens)
         except Exception as e:
@@ -36,7 +36,10 @@ def llm_complete_chat(
 
 
 def _openai_chat(system_prompt: str, user_prompt: str, *, max_tokens: int) -> str:
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    api_key = get_openai_api_key()
+    if not api_key:
+        raise RuntimeError("OpenAI API key not configured")
+    client = OpenAI(api_key=api_key)
     r = client.chat.completions.create(
         model=OPENAI_MODEL,
         messages=[

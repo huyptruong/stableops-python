@@ -23,8 +23,24 @@ if _sqlite_path:
 else:
     SQLITE_PATH = DATA_DIR / "app.db"
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+
+def get_openai_api_key() -> str | None:
+    """
+    Return OpenAI API key with priority: Streamlit secrets first, then env OPENAI_API_KEY.
+    Imports streamlit only inside this function so the app can run outside Streamlit (e.g. tests).
+    """
+    try:
+        import streamlit as st
+        key = st.secrets.get("OPENAI_API_KEY")
+        if key:
+            return key
+    except ImportError:
+        pass
+    except Exception:
+        pass  # e.g. st.secrets not available when not in Streamlit
+    return os.getenv("OPENAI_API_KEY")
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
