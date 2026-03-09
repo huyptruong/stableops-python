@@ -1,0 +1,20 @@
+[project]
+name = "python-ai-starter"
+version = "0.1.0"
+description = "Reusable Python starter template for AI-powered applications"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.55",
+    "openai>=2.26",
+    "python-dotenv>=1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
