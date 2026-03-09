@@ -1,1 +1,1 @@
-"""Python AI starter template — application source package."""
+"""StableOps (stableops-python) — application source package."""

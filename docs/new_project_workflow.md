@@ -1,15 +1,17 @@
-# New Project Workflow
+# Development workflow
 
-This document describes how to start a new project using this template.
+This document describes how to run, develop, and extend the StableOps app.
 
 ---
 
-## 1. Copy the template
+## 1. Get the repo
+
+Clone or fork the repo:
 
 ```bash
 cd ~/git_repos
-cp -r python-ai-starter-template my-new-project
-cd my-new-project
+git clone <repo-url> stableops-python
+cd stableops-python
 ```
 
 ---
@@ -22,21 +24,15 @@ cursor .
 
 ---
 
-## 3. Use the master build prompt
+## 3. Use the master build prompt (for new features)
 
-Open:
+When adding a new workflow or feature, open:
 
 ```
 docs/prompts/master_build_prompt.md
 ```
 
-Paste the prompt into Cursor and describe the project you want to build.
-
-Example:
-
-- what the app does
-- who the user is
-- what the main workflow is
+Paste the prompt into Cursor and describe what you want to build (e.g. new workflow, who the user is, main steps).
 
 ---
 
@@ -54,7 +50,7 @@ streamlit run app.py
 
 ## 5. Ask Cursor for a review
 
-Use the review prompt located at:
+Use the review prompt:
 
 ```
 docs/prompts/review_prompt.md
@@ -64,7 +60,7 @@ Ask Cursor to review the architecture and suggest improvements.
 
 ---
 
-## 6. Improve structure before adding many features
+## 6. Keep structure clear before adding many features
 
 Focus on:
 

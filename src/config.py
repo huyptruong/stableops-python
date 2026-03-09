@@ -2,10 +2,6 @@ from pathlib import Path
 import os
 import logging
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 # Data directory: use DATA_DIR env if set, else ROOT_DIR / "data"
@@ -14,7 +10,6 @@ if _data_dir:
     DATA_DIR = Path(_data_dir)
 else:
     DATA_DIR = ROOT_DIR / "data"
-DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # SQLite path: use SQLITE_PATH env if set, else DATA_DIR / "app.db"
 _sqlite_path = os.getenv("SQLITE_PATH")
@@ -24,6 +19,14 @@ else:
     SQLITE_PATH = DATA_DIR / "app.db"
 
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
+MAX_TOKENS_SOCIAL_POST = int(os.getenv("MAX_TOKENS_SOCIAL_POST", "512"))
+
+
+def ensure_data_dir() -> None:
+    """Create the data directory if it does not exist. Call once at app startup."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def get_openai_api_key() -> str | None:
@@ -41,11 +44,6 @@ def get_openai_api_key() -> str | None:
     except Exception:
         pass  # e.g. st.secrets not available when not in Streamlit
     return os.getenv("OPENAI_API_KEY")
-
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
-
-MAX_TOKENS_SOCIAL_POST = int(os.getenv("MAX_TOKENS_SOCIAL_POST", "512"))
 
 
 def configure_logging(level: int = logging.INFO) -> None:

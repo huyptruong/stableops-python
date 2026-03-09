@@ -1,12 +1,11 @@
+from src.startup import bootstrap_app
+
+bootstrap_app()
+
 import streamlit as st
 
-from src.config import configure_logging
-from src.integrations.storage import init_db
 from src.schemas import CreatePostInput, SocialPlatform
 from src.services.create_social_post import run_create_social_post
-
-configure_logging()
-init_db()
 
 st.set_page_config(page_title="StableOps", page_icon="🐴", layout="centered")
 st.title("🐴 StableOps")

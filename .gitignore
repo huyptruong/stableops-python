@@ -1,7 +1,13 @@
+# Ignore runtime and generated files (do not commit).
+# See README "Version control" for what is tracked.
+
 __pycache__/
 .venv/
 .env
 *.pyc
 *.db
-data/
 .pytest_cache/
+
+# data/ holds runtime DB and artifacts; only the directory placeholder is tracked.
+data/*
+!data/.gitkeep

@@ -1,7 +1,7 @@
 [project]
-name = "python-ai-starter"
+name = "stableops-python"
 version = "0.1.0"
-description = "Reusable Python starter template for AI-powered applications"
+description = "StableOps — AI-powered tools for therapeutic riding programs (Python + Streamlit)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

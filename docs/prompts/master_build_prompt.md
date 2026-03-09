@@ -1,4 +1,4 @@
-You are helping me build a Python AI application starting from this starter template.
+You are helping me build a Python AI application starting from the stableops-python app.
 
 Follow these rules:
 

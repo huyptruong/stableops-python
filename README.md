@@ -12,12 +12,16 @@ AI-powered tools for therapeutic riding programs. Python + Streamlit app built o
 
 ## Local setup
 
+**Dependencies:** `pyproject.toml` is the source of truth. For run-only installs (e.g. Streamlit Community Cloud), `requirements.txt` lists the same runtime dependencies and is kept in sync.
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env
 ```
+
+For local development including tests: `pip install -e '.[dev]'` (installs runtime + pytest).
 
 Add your API key(s) to `.env`, then:
 
@@ -31,13 +35,15 @@ Run tests:
 pytest
 ```
 
+(Requires dev dependencies: `pip install -e '.[dev]'` or `pip install pytest`.)
+
 ---
 
 ## Environment variables
 
 See `.env.example` for a template.
 
-- **OPENAI_API_KEY** — Used first for AI generation (optional; template fallback if unset).
+- **OPENAI_API_KEY** — Used for AI generation (optional; template fallback if unset). On Streamlit Community Cloud, set it in app Secrets; locally, set it in `.env`. Config resolves it via `get_openai_api_key()` (secrets first, then env).
 - **ANTHROPIC_API_KEY** — Used if OpenAI is not set (optional).
 - **OPENAI_MODEL**, **ANTHROPIC_MODEL** — Model names (defaults in `.env.example`).
 - **MAX_TOKENS_SOCIAL_POST** — Max tokens for social post (default: 512).
@@ -49,16 +55,25 @@ See `.env.example` for a template.
 
 ```
 app.py                → Streamlit UI (thin; delegates to services)
-src/config.py         → Configuration and env vars
+src/config.py         → Configuration, env vars, API key resolution (secrets + env)
 src/services/         → Workflow logic (e.g. create_social_post)
-src/integrations/     → LLM, storage (SQLite)
-src/prompts/          → AI prompt templates
+src/integrations/     → LLM (OpenAI/Anthropic), storage (SQLite artifacts)
+src/prompts/          → AI prompt templates (e.g. social_post)
 src/schemas.py        → Pydantic input/output models
 tests/                → Pytest tests
 docs/                 → Architecture and development notes
 ```
 
 See **AGENTS.md** and `docs/architecture.md` for conventions and AI-assisted development.
+
+---
+
+## Version control
+
+**Tracked (source):** Application code (`app.py`, `src/`, `tests/`), config and docs (`pyproject.toml`, `requirements.txt`, `docs/`, `AGENTS.md`, `.env.example`, `.gitignore`). The `data/` directory exists in the repo with a `.gitkeep` placeholder only.
+
+**Not tracked (runtime/generated):** Everything under `data/` except `.gitkeep` (e.g. `data/app.db`), `.env` (secrets), `.venv/`, `__pycache__/`, `.pytest_cache/`, and `*.pyc`. These are created locally or at deploy time and should not be committed.
+
 
 ---
 

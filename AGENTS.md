@@ -4,7 +4,8 @@ Use this file to keep AI-assisted changes aligned with the project.
 
 ## Structure
 
-- **app.py** — UI entrypoint. Keep it thin; delegate to `src/services/`.
+- **app.py** — UI entrypoint. Call `bootstrap_app()` from `src/startup` once at the top, then keep the rest thin; delegate to `src/services/`.
+- **src/startup.py** — Bootstrap: load env, ensure data dir, configure logging, init DB. Single entry point for app startup.
 - **src/services/** — Core business logic. Call `src/integrations/`, not external APIs directly.
 - **src/integrations/** — External systems (LLM, DB, etc.).
 - **src/prompts/** — AI prompt templates for the app.
