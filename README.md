@@ -1,67 +1,31 @@
-# Python AI Starter Template
+# StableOps
 
-A reusable Python starter template for building AI-powered applications.
-
-This template provides a clean architecture and basic components so new projects can start quickly while remaining easy to understand and extend.
+AI-powered tools for therapeutic riding programs. Python + Streamlit app built on a simple layered architecture.
 
 ---
 
-# What this template includes
+## What’s included
 
-- Streamlit app shell
-- OpenAI integration
-- SQLite storage
-- environment-based configuration
-- simple service layer
-- architecture documentation
-- prompt templates for Cursor
-- basic test setup
+- **Create Social Post** — Generate social post content for Instagram and/or Facebook (AI or template fallback). Results are saved in the app database.
 
 ---
 
-# Project structure
-
-```
-app.py                → application entry point (UI)
-
-src/config.py         → configuration and environment variables
-src/services/         → core business logic
-src/integrations/     → external systems (LLM, database, etc.)
-src/prompts/          → AI prompt templates
-src/db/               → database-related code
-src/utils/            → helper utilities
-
-tests/                → automated tests
-docs/                 → architecture and development documentation
-```
-
----
-
-# Local setup
-
-Create a virtual environment and install dependencies.
+## Local setup
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-Copy the environment template:
-
-```bash
 cp .env.example .env
 ```
 
-Add your OpenAI key inside `.env`.
-
-Then run the app:
+Add your API key(s) to `.env`, then:
 
 ```bash
 streamlit run app.py
 ```
 
-Run tests (from project root):
+Run tests:
 
 ```bash
 pytest
@@ -69,44 +33,35 @@ pytest
 
 ---
 
-# Environment variables
+## Environment variables
 
-See `.env.example` for a template. Required and optional variables:
+See `.env.example` for a template.
 
-Required:
-
-```
-OPENAI_API_KEY
-```
-
-Optional:
-
-```
-OPENAI_MODEL
-DATA_DIR      # Override data directory (default: ./data)
-SQLITE_PATH   # Override SQLite file path (default: DATA_DIR/app.db)
-```
+- **OPENAI_API_KEY** — Used first for AI generation (optional; template fallback if unset).
+- **ANTHROPIC_API_KEY** — Used if OpenAI is not set (optional).
+- **OPENAI_MODEL**, **ANTHROPIC_MODEL** — Model names (defaults in `.env.example`).
+- **MAX_TOKENS_SOCIAL_POST** — Max tokens for social post (default: 512).
+- **DATA_DIR**, **SQLITE_PATH** — Override data directory and database path (defaults: `./data`, `./data/app.db`).
 
 ---
 
-# Development principles
+## Project structure
 
-This template follows a few simple rules:
+```
+app.py                → Streamlit UI (thin; delegates to services)
+src/config.py         → Configuration and env vars
+src/services/         → Workflow logic (e.g. create_social_post)
+src/integrations/     → LLM, storage (SQLite)
+src/prompts/          → AI prompt templates
+src/schemas.py        → Pydantic input/output models
+tests/                → Pytest tests
+docs/                 → Architecture and development notes
+```
 
-- prefer readable code over clever code
-- keep UI separate from business logic
-- isolate external integrations
-- keep prompts separate from Python code
-- add tests for important logic
+See **AGENTS.md** and `docs/architecture.md` for conventions and AI-assisted development.
 
 ---
 
-# AI-assisted development
+## Purpose
 
-For Cursor or other AI tools: see `docs/new_project_workflow.md` and the prompts in `docs/prompts/`. The project also includes `AGENTS.md` and `.cursor/rules/` to keep generated code aligned with this architecture.
-
----
-
-# Purpose of this template
-
-The goal of this project is to provide a clean starting point for building AI-powered Python applications quickly while keeping the architecture understandable and maintainable.
+StableOps helps therapeutic riding programs with AI-assisted content (social posts, and more workflows over time) while keeping the codebase readable and easy to extend.

@@ -26,6 +26,11 @@ else:
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
+
+MAX_TOKENS_SOCIAL_POST = int(os.getenv("MAX_TOKENS_SOCIAL_POST", "512"))
+
 
 def configure_logging(level: int = logging.INFO) -> None:
     """Configure logging for the application. Call once at startup (e.g. in app.py)."""
