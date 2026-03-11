@@ -2,6 +2,7 @@ from src.startup import bootstrap_app
 
 bootstrap_app()
 
+import base64
 import streamlit as st
 
 from src.schemas import (
@@ -15,6 +16,48 @@ from src.services.create_newsletter import run_create_newsletter
 from src.services.draft_grant_proposal import run_draft_grant_proposal
 
 st.set_page_config(page_title="StableOps", page_icon="🐴", layout="centered")
+
+
+def _copy_button(text: str, key: str) -> None:
+    """Render a 'Copy Text' button that copies the given text to the clipboard."""
+    b64 = base64.b64encode(text.encode("utf-8")).decode("ascii")
+    html = f"""
+    <div>
+      <button id="copy-btn-{key}" style="
+        font-weight: 500;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        border: 1px solid rgba(49, 51, 63, 0.2);
+        background: rgba(255, 75, 75, 0.1);
+        color: rgb(255, 75, 75);
+        cursor: pointer;
+      ">Copy Text</button>
+      <span id="copy-msg-{key}" style="margin-left:8px;color:green;display:none;font-size:0.9em">Copied!</span>
+      <script>
+      (function() {{
+        var btn = document.getElementById("copy-btn-{key}");
+        var msg = document.getElementById("copy-msg-{key}");
+        var b64 = "{b64}";
+        function b64ToUtf8(b64) {{
+          var bin = atob(b64);
+          var bytes = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          return new TextDecoder().decode(bytes);
+        }}
+        var text = b64ToUtf8(b64);
+        btn.onclick = function() {{
+          navigator.clipboard.writeText(text).then(function() {{
+            msg.style.display = "inline";
+            setTimeout(function() {{ msg.style.display = "none"; }}, 2000);
+          }});
+        }};
+      }})();
+      </script>
+    </div>
+    """
+    st.components.v1.html(html, height=40)
+
+
 st.title("🐴 StableOps")
 st.caption("AI-powered tools for therapeutic riding programs")
 
@@ -37,7 +80,6 @@ if page == "Create Social Post":
         format_func=lambda x: x.value.capitalize(),
         horizontal=True,
     )
-    use_llm = st.checkbox("Use AI (when API key is set)", value=True)
     if st.button("Generate Post ✨"):
         if not details.strip():
             st.warning("Please enter what the post is about.")
@@ -45,20 +87,14 @@ if page == "Create Social Post":
             with st.spinner("Generating..."):
                 out = run_create_social_post(
                     CreatePostInput(details=details.strip(), platform=platform),
-                    use_llm=use_llm,
+                    use_llm=True,
                 )
             st.session_state["create_social_post_result"] = out
     if "create_social_post_result" in st.session_state:
         out = st.session_state["create_social_post_result"]
         st.subheader("Generated Post")
         st.text_area("Post content", value=out.post_text, height=220, key="post_result", disabled=True)
-        st.download_button(
-            "Download as .txt",
-            data=out.post_text,
-            file_name="stableops_post.txt",
-            mime="text/plain",
-            key="dl_post",
-        )
+        _copy_button(out.post_text, "post")
 
 elif page == "Create Newsletter":
     st.header("Create Newsletter")
@@ -89,13 +125,7 @@ elif page == "Create Newsletter":
         st.subheader("Body (plain text)")
         st.text_area("Body", value=out.body_plain, height=280, key="news_body", disabled=True)
         full = f"Subject: {out.subject_line}\n\n{out.body_plain}"
-        st.download_button(
-            "Download as .txt",
-            data=full,
-            file_name="stableops_newsletter.txt",
-            mime="text/plain",
-            key="dl_news",
-        )
+        _copy_button(full, "news")
 
 elif page == "Draft Grant Proposal":
     st.header("Draft Grant Proposal")
@@ -138,10 +168,4 @@ elif page == "Draft Grant Proposal":
         )
         if out.suggested_headings:
             st.caption("Suggested headings: " + ", ".join(out.suggested_headings))
-        st.download_button(
-            "Download as .md",
-            data=out.draft_sections,
-            file_name="stableops_grant_draft.md",
-            mime="text/markdown",
-            key="dl_grant",
-        )
+        _copy_button(out.draft_sections, "grant")
